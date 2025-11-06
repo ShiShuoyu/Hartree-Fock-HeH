@@ -64,9 +64,10 @@ def gaussian_overlap(alpha1: np.float64, alpha2: np.float64, R1: np.ndarray, R2:
 ## gaussian_coulomb HAS NOT BEEN VERIFIED YET ##
 def gaussian_coulomb(alpha1: np.float64, alpha2: np.float64, R1: np.ndarray, R2: np.ndarray, R3: np.ndarray) -> float:
     """
-    Calculate the overlap integral between two Gaussian functions and a Coulomb potential.
+    Calculate the overlap integral between two Gaussian functions and a Coulomb potential. 
+    Assumes positive charge.
 
-    Integration: ∫ N1 * exp(-alpha1|r-R1|²) * N2 * exp(-alpha2|r-R2|²) * (1/|r-R3|) dr
+    Integration: ∫ N1 * exp(-alpha1|r-R1|²) * N2 * exp(-alpha2|r-R2|²) * (1/|r-R3|) / 4pi dr
 
     input:
     alpha1 (float): the exponent parameter of the first Gaussian function
@@ -88,14 +89,14 @@ def gaussian_coulomb(alpha1: np.float64, alpha2: np.float64, R1: np.ndarray, R2:
     
     T = alpha_p * PR3_squared
     
-    prefactor = (4 * alpha1 * alpha2 / alpha_p**2)**(3.0 / 4.0)
+    prefactor = (4 * alpha1 * alpha2 / np.pi**2)**(3.0 / 4.0) * (2*np.pi/alpha_p)
     exponential = np.exp(-alpha1 * alpha2 / alpha_p * R12_squared)
-    coulomb_factor = 2.0 * np.sqrt(np.pi) / np.sqrt(alpha_p) * _boys_function_F0(T)
     
-    return prefactor * exponential * coulomb_factor
+    return prefactor * exponential * _boys_function_F0(T)
 
 # Example usage
 if __name__ == "__main__":
+    ## example for gaussian_overlap ##
     # STO-3G basis for H and He atoms
     # Format: [alpha, coefficient]
     He_data = [
@@ -121,3 +122,6 @@ if __name__ == "__main__":
             S_HeH += coeff_He * coeff_H * gaussian_overlap(alpha_He, alpha_H, R_He, R_H)
     
     print(f"Overlap between He and H STO-3G orbitals: {S_HeH:.8f}")
+
+    ## another example for gaussian_coulomb ##
+    print(f"Coulomb integral between two Gaussians and a charge: {gaussian_coulomb(1, 0.5, np.array([0,0,0]), np.array([0,0,0]), np.array([0,0,0])):.8f}")
