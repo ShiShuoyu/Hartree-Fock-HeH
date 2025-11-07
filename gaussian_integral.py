@@ -61,7 +61,6 @@ def gaussian_overlap(alpha1: np.float64, alpha2: np.float64, R1: np.ndarray, R2:
     
     return prefactor * exponential
 
-## gaussian_coulomb HAS NOT BEEN VERIFIED YET ##
 def gaussian_coulomb(alpha1: np.float64, alpha2: np.float64, R1: np.ndarray, R2: np.ndarray, R3: np.ndarray) -> float:
     """
     Calculate the overlap integral between two Gaussian functions and a Coulomb potential. 
@@ -89,7 +88,7 @@ def gaussian_coulomb(alpha1: np.float64, alpha2: np.float64, R1: np.ndarray, R2:
     
     T = alpha_p * PR3_squared
     
-    prefactor = (4 * alpha1 * alpha2 / np.pi**2)**(3.0 / 4.0) * (2*np.pi/alpha_p)
+    prefactor = (4 * alpha1 * alpha2 / np.pi**2)**(3.0 / 4.0) * (2*np.pi/alpha_p) / (4*np.pi)
     exponential = np.exp(-alpha1 * alpha2 / alpha_p * R12_squared)
     
     return prefactor * exponential * _boys_function_F0(T)
